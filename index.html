@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.calculator {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+}
+
+.display {
+    background-color: #eaeaea;
+    border: none;
+    border-radius: 5px;
+    font-size: 2em;
+    height: 50px;
+    margin-bottom: 10px;
+    padding: 10px;
+    text-align: right;
+    width: 100%;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 15px 0;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn:active {
+    background-color: #004494;
+}
+
+.operator {
+    background-color: #28a745;
+}
+
+.operator:hover {
+    background-color: #218838;
+}
+
+.operator:active {
+    background-color: #1e7e34;
+}
+</style>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <button class="btn" onclick="appendNumber('7')">7</button>
+            <button class="btn" onclick="appendNumber('8')">8</button>
+            <button class="btn" onclick="appendNumber('9')">9</button>
+            <button class="btn operator" onclick="chooseOperator('/')">/</button>
+            <button class="btn" onclick="appendNumber('4')">4</button>
+            <button class="btn" onclick="appendNumber('5')">5</button>
+            <button class="btn" onclick="appendNumber('6')">6</button>
+            <button class="btn operator" onclick="chooseOperator('*')">*</button>
+            <button class="btn" onclick="appendNumber('1')">1</button>
+            <button class="btn" onclick="appendNumber('2')">2</button>
+            <button class="btn" onclick="appendNumber('3')">3</button>
+            <button class="btn operator" onclick="chooseOperator('-')">-</button>
+            <button class="btn" onclick="appendNumber('0')">0</button>
+            <button class="btn" onclick="clear()">C</button>
+            <button class="btn operator" onclick="calculate()">=</button>
+            <button class="btn operator" onclick="chooseOperator('+')">+</button>
+        </div>
+    </div>
+
+    <script>
+        // This file contains the JavaScript code for the calculator functionality.
+
+const display = document.getElementById('display');
+let currentInput = '';
+let operator = '';
+let firstOperand = null;
+
+function appendNumber(number) {
+    currentInput += number;
+    updateDisplay();
+}
+
+function chooseOperator(op) {
+    if (currentInput === '') return;
+    if (firstOperand === null) {
+        firstOperand = parseFloat(currentInput);
+    } else if (operator) {
+        firstOperand = operate(firstOperand, parseFloat(currentInput), operator);
+    }
+    operator = op;
+    currentInput = '';
+}
+
+function operate(first, second, op) {
+    switch (op) {
+        case '+':
+            return first + second;
+        case '-':
+            return first - second;
+        case '*':
+            return first * second;
+        case '/':
+            return second === 0 ? 'Error' : first / second;
+        default:
+            return second;
+    }
+}
+
+function calculate() {
+    if (firstOperand === null || currentInput === '') return;
+    currentInput = operate(firstOperand, parseFloat(currentInput), operator).toString();
+    operator = '';
+    firstOperand = null;
+    updateDisplay();
+}
+
+function updateDisplay() {
+    display.value = currentInput || '0';
+}
+
+function clear() {
+    currentInput = '';
+    operator = '';
+    firstOperand = null;
+    updateDisplay();
+}
+
+// Event listeners for buttons
+document.querySelectorAll('.number').forEach(button => {
+    button.addEventListener('click', () => appendNumber(button.innerText));
+});
+
+document.querySelectorAll('.operator').forEach(button => {
+    button.addEventListener('click', () => chooseOperator(button.innerText));
+});
+
+document.getElementById('equals').addEventListener('click', calculate);
+document.getElementById('clear').addEventListener('click', clear);
+    </script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
